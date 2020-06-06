@@ -25,7 +25,7 @@ pip install pipenv
 
 ### Installing
 
-Once pipenv is installed, simple run this:
+Once pipenv is installed, simply run this:
 
 ```
 pipenv install

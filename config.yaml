@@ -1,0 +1,55 @@
+requires_deescalation:
+  search_terms:
+    - escalat
+  phrases_for_positive_indicator:
+
+bans_chokeholds_and_strangleholds:
+  search_terms:
+    - choke
+    - strangle
+    - carotid
+    - lateral
+  phrases_for_positive_indicator:
+    - except where deadly force is justified
+
+duty_to_intervene:
+  search_terms:
+    - intercede
+    - intervene
+  phrases_for_positive_indicator:
+    - shall...intercede to prevent...unreasonable force
+
+requires_warning_before_shooting:
+  search_terms:
+    - verbal warning
+  phrases_for_positive_indicator:
+    - verbal warning...precede...deadly force
+
+bans_shooting_at_moving_vehicle:
+  search_terms:
+    - moving vehicle
+  phrases_for_positive_indicator:
+    - moving vehicle...shall not...constitute a threat
+
+
+requires_comprehensive_reporting:
+  # Check if a department requires all types of force to be reported including when officers point a firearm at a
+  # civilian (That’s usually where most departments fail at this).
+  search_terms:
+    - report
+  phrases_for_positive_indicator:
+
+requires_exhaustion_of_all_other_means:
+  search_terms:
+    - exhaust
+    - alternative
+  phrases_for_positive_indicator:
+
+has_use_of_force_continumm:
+  search_terms:
+    - continuum
+    - matrix
+    - force classification
+  phrases_for_positive_indicator:
+    - use of force classification
+    - use of force continuum

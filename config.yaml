@@ -1,9 +1,16 @@
 requires_deescalation:
+  # Check if it says officers are required to use de-escalation whenever possible or if it says de-escalation is
+  # optional (for example saying officers “may” use it but not that they “should” or “shall”). It might also say
+  # de-escalation is required in specific situations (like responding to a mental health crisis) but does not say its
+  # required in all cases whenever possible. If it's not always required or it's not mentioned at all then it should
+  # be coded as a 0.
   search_terms:
     - escalat
   phrases_for_positive_indicator:
 
 bans_chokeholds_and_strangleholds:
+  # If the policy either bans both tactics or restricts them to only be authorized as deadly force/in response to an
+  # imminent threat of death or serious injury then its a 1. In all other cases it’s coded as a 0
   search_terms:
     - choke
     - strangle
@@ -13,6 +20,9 @@ bans_chokeholds_and_strangleholds:
     - except where deadly force is justified
 
 duty_to_intervene:
+  # This should be coded as 1 if officers are required to intervene/intercede if they witness another officer’s use of
+  # excessive force incident. Some policies don’t include this requirement at all while others just require officers to
+  # report the excessive force to a supervisor after the fact. Those should all be coded as 0.
   search_terms:
     - intercede
     - intervene
@@ -20,12 +30,20 @@ duty_to_intervene:
     - shall...intercede to prevent...unreasonable force
 
 requires_warning_before_shooting:
+  # Check whether officers are required to give a verbal warning "when feasible" or "when possible" prior to shooting
+  # at someone. If you see such language in their use of force policy then code it as a 1. Otherwise it's a 0.
   search_terms:
     - verbal warning
   phrases_for_positive_indicator:
     - verbal warning...precede...deadly force
 
 bans_shooting_at_moving_vehicle:
+  # What we’re looking for is whether the policy bans shooting at vehicles in all cases where the vehicle is the only
+  # threat present. However, be careful about this one because it is the area where the policy language is particularly
+  # tricky. For example, some policies will ban shooting at vehicles unless there is an “imminent threat of death or
+  # serious injury” by the vehicle. This is not actually a ban and therefore should be coded as a 0. It should only be
+  # coded as 1 if shooting at a vehicle (or someone inside a vehicle) is banned either entirely or for all cases except
+  # when there is a threat of deadly force by means other than a vehicle.
   search_terms:
     - moving vehicle
   phrases_for_positive_indicator:
@@ -40,12 +58,27 @@ requires_comprehensive_reporting:
   phrases_for_positive_indicator:
 
 requires_exhaustion_of_all_other_means:
+  # Some policies will just say deadly force is authorized whenever "reasonable to prevent an imminent threat of death
+  # or serious injury" or "when reasonable to prevent someone from escaping who poses an imminent threat of death or
+  # serious injury." This would be coded as a 0. Alternatives need to be explicitly required to be coded as a 1.
   search_terms:
     - exhaust
     - alternative
   phrases_for_positive_indicator:
 
 has_use_of_force_continumm:
+  # Check whether the police department has a use of force continuum (sometimes called a use of force matrix or
+  # response to resistance continuum), that specifies the types of force that are authorized to respond to specific
+  # levels of "resistance" or "threat". Usually, for Lexipol policies in particular, there is no such continuum or
+  # there's only 2-3 levels of force (use of force, carotid restraint, deadly force) with no specific guidance for how
+  # and when for example a baton vs a punch vs a taser would be authorized. In general, we're looking for there to
+  # either be a chart, matrix/grid or infographic outlining the levels of force and levels of resistance. In some
+  # cases, you'll see that these are actually spelled out in separate sections for each type of force (i.e. a taser
+  # policy, baton policy, etc.). But pay attention to whether there's any real difference articulated in these policies
+  # that outlines when one tactic would be authorized but not another (for example, many policies just say "this tactic
+  # is approved to deal with a violent or physically resistant individual" for all the different force types, which
+  # means there isn't actually a continuum/hierarchy of force). This is probably the most difficult one to code
+  # consistently since there are many potential variations.
   search_terms:
     - continuum
     - matrix

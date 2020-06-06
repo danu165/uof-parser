@@ -85,6 +85,7 @@ class UOFParser:
                 matches = re.findall(regex_to_find_year, line.lower())
                 if matches:
                     self.year_of_policy = matches[0]
+                    break
 
     def get_line_location_from_sentence_location(self, sentence_location_integer):
         """

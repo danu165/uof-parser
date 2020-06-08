@@ -9,6 +9,12 @@ verify_ssl = true
 tika = "*"
 pyyaml = "*"
 pytest = "*"
+requests = "*"
+google = "*"
+beautifulsoup4 = "*"
+lxml = "*"
+requests-html = "*"
+selenium = "*"
 
 [requires]
 python_version = "3.8"

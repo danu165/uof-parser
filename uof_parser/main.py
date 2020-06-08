@@ -1,6 +1,6 @@
 import tika
 from tika import parser
-from use_of_force_parser import UOFParser
+from uof_parser.use_of_force_parser import UOFParser
 import yaml
 
 
@@ -56,7 +56,7 @@ def main():
     uof_parser = UOFParser(content)
 
     # Read in config
-    config = yaml.safe_load(open('config.yaml'))
+    config = yaml.safe_load(open('../config.yaml'))
 
     # Run indicators:
     for policy, policy_indicators in config.items():

@@ -7,7 +7,7 @@ import yaml
 
 # Add parent dir to path to import module
 sys.path.insert(1, os.path.realpath((os.path.join(sys.path[0], '..'))))
-from use_of_force_parser import UOFParser, convert_input_to_regex
+from uof_parser.use_of_force_parser import UOFParser, convert_input_to_regex
 
 
 config = yaml.safe_load(open('config.yaml'))

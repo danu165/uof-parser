@@ -56,7 +56,10 @@ def main():
     uof_parser = UOFParser(content)
 
     # Read in config
-    config = yaml.safe_load(open('../config.yaml'))
+    try:
+        config = yaml.safe_load(open('config.yaml'))
+    except FileNotFoundError:
+        config = yaml.safe_load(open('uof_parser/config.yaml'))
 
     # Run indicators:
     for policy, policy_indicators in config.items():

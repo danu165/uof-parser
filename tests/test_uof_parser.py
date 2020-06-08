@@ -10,7 +10,7 @@ sys.path.insert(1, os.path.realpath((os.path.join(sys.path[0], '..'))))
 from uof_parser.use_of_force_parser import UOFParser, convert_input_to_regex
 
 
-config = yaml.safe_load(open('config.yaml'))
+config = yaml.safe_load(open('uof_parser/config.yaml'))
 tika.initVM()
 
 

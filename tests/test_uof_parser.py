@@ -110,3 +110,28 @@ def test_pueblo_co():
             'requires_comprehensive_reporting', 'bans_shooting_at_moving_vehicle'
         ]
     )
+
+
+def test_vancouver_wa():
+    # Give file path and expected indicator outcomes
+    file_path = f'{os.getcwd()}/tests/example_policies/vancouver_wa.pdf'
+    parsed = parser.from_file(file_path)
+    uof_parser = UOFParser(parsed["content"])
+
+    # NOTE: Manually moved "ban_shooting_at_moving_vehicle" to false because of this language:
+    #   An officer should only discharge a firearm at a moving vehicle or its occupants when the officer
+    #   reasonably believes there are no other reasonable means available to avert the threat of the
+    #   vehicle
+
+    assert perform_check(
+        uof_parser,
+        lexipol=True,
+        year_of_policy='2019',
+        true_indicators=[
+            'requires_deescalation', 'duty_to_intervene', 'requires_warning_before_shooting',
+        ],
+        false_indicators=[
+            'bans_chokeholds_and_strangleholds', 'requires_exhaustion_of_all_other_means',
+            'requires_comprehensive_reporting', 'bans_shooting_at_moving_vehicle', 'has_use_of_force_continumm',
+        ]
+    )

@@ -7,6 +7,7 @@ requires_deescalation:
   search_terms:
     - escalat
   phrases_for_positive_indicator:
+    - shall use de-escalation
 
 bans_chokeholds_and_strangleholds:
   # If the policy either bans both tactics or restricts them to only be authorized as deadly force/in response to an

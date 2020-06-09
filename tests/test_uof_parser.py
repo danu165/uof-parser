@@ -118,11 +118,6 @@ def test_vancouver_wa():
     parsed = parser.from_file(file_path)
     uof_parser = UOFParser(parsed["content"])
 
-    # NOTE: Manually moved "ban_shooting_at_moving_vehicle" to false because of this language:
-    #   An officer should only discharge a firearm at a moving vehicle or its occupants when the officer
-    #   reasonably believes there are no other reasonable means available to avert the threat of the
-    #   vehicle
-
     assert perform_check(
         uof_parser,
         lexipol=True,
@@ -133,5 +128,32 @@ def test_vancouver_wa():
         false_indicators=[
             'bans_chokeholds_and_strangleholds', 'requires_exhaustion_of_all_other_means',
             'requires_comprehensive_reporting', 'bans_shooting_at_moving_vehicle', 'has_use_of_force_continumm',
+        ]
+    )
+
+
+def test_salt_lake_city_ut():
+    # Give file path and expected indicator outcomes
+    file_path = f'{os.getcwd()}/tests/example_policies/salt_lake_city_ut.pdf'
+    parsed = parser.from_file(file_path)
+    uof_parser = UOFParser(parsed["content"])
+
+    # NOTE: Manually moved "requires_exhaustion_of_all_other_means" to false because of this language:
+    #   The fact that there is more than one Use of Force Option available for a given Level of Resistance does not
+    #   imply that each available option must be followed in a tiered order. While each option that is available should
+    #   be considered, when practicable, a subject's actions and the situation's circumstances may dictate an officer's
+    #   immediate use of the highest option authorized for a given Level of Resistance.
+
+    assert perform_check(
+        uof_parser,
+        lexipol=True,
+        year_of_policy='2019',
+        true_indicators=[
+            'requires_deescalation', 'duty_to_intervene', 'requires_warning_before_shooting',
+            'requires_comprehensive_reporting', 'has_use_of_force_continumm',
+        ],
+        false_indicators=[
+            'bans_chokeholds_and_strangleholds', 'requires_exhaustion_of_all_other_means',
+            'bans_shooting_at_moving_vehicle',
         ]
     )

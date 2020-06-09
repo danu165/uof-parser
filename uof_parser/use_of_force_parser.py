@@ -3,12 +3,30 @@ import re
 
 def convert_input_to_regex(raw_input):
     """
+    Additional conditions are provided within double parentheses so those are split away
     ... is replaced with \s?.+\s
     spaces are replaced with \s+
     :param raw_input: string
     :return: string
     """
-    return raw_input.replace('...', r'\s?.+\s').replace(' ', r'\s+')
+    return raw_input.split(' ((')[0].replace('...', r'\s?.+\s').replace(' ', r'\s+')
+
+
+def extract_additional_conditions(raw_input):
+    """
+    This will extract any additional conditions provided. Currently these are accepted within double parenthese like so:
+        when a member draws a firearm and acquires a target ((under section: REPORTING THE USE OF FORCE))
+    :param raw_input:
+    :return:
+    """
+    additional_conditions = {}
+    matches = re.findall(r'\(\((.+)\)\)', raw_input)
+    for match in matches:
+        split_match = match.split(':')
+        key = split_match[0].strip().replace(' ', '_')
+        value = split_match[1].strip().lower()
+        additional_conditions[key] = value
+    return additional_conditions
 
 
 def is_enumerated_list(block_of_text):
@@ -99,7 +117,7 @@ class UOFParser:
         clean_sentence_split_by_line = clean_content_list(sentence_split_by_line)
 
         for i, line in enumerate(self.content_as_lines):
-            if clean_sentence_split_by_line[0] in line:
+            if clean_sentence_split_by_line[0].strip() in line:
                 # If there are no additional lines to find, then return this location integer
                 if len(clean_sentence_split_by_line) == 1:
                     return i
@@ -110,7 +128,7 @@ class UOFParser:
                 for additional_line in clean_sentence_split_by_line[1:]:
                     additional_line_counter += 1
                     next_line_in_list = self.content_as_lines[i + additional_line_counter].split('.')[0]
-                    if additional_line.strip() != next_line_in_list:
+                    if additional_line.strip() not in next_line_in_list:
                         break
                 else:
                     return i
@@ -136,6 +154,31 @@ class UOFParser:
             if '300' in line:
                 return line
 
+    def passes_additional_conditions(self, additional_conditions_dict, sentence_location_integer):
+        """
+        This will confirm if a sentence meets all of the additional conditions specified
+        :param additional_conditions_dict: Dictionary of additional conditions
+        :param sentence_location_integer: integer
+        :return: boolean
+        """
+
+        # If there are no additional conditions, return true
+        if not additional_conditions_dict:
+            return True
+
+        # Check the conditions
+        list_of_booleans = []
+        for k, v in additional_conditions_dict.items():
+            if k == 'under_section':
+                section = self.get_lexipol_section(sentence_location_integer) if self.lexipol else ''
+                if v in section.lower():
+                    list_of_booleans.append(True)
+            else:
+                print(f"No check has been created for additional condition '{k}'")
+                list_of_booleans.append(False)
+
+        return all(condition is True for condition in list_of_booleans)
+
     def perform_search(self, phrases_to_search, positive_indicator_phrases):
         """
         This will search each sentence for specific phrases. Then it will use a list of additional phrases to determine
@@ -152,6 +195,9 @@ class UOFParser:
         if positive_indicator_phrases is None:
             positive_indicator_phrases = []
 
+        # Check if any additional conditions were given in positive_indicator_phrases
+        additional_conditions = [extract_additional_conditions(phrase) for phrase in positive_indicator_phrases]
+
         # Translate inputs to their regex phrases
         regex_phrases_to_search = [convert_input_to_regex(phrase) for phrase in phrases_to_search]
         regex_positive_indicator_phrases = [convert_input_to_regex(phrase) for phrase in positive_indicator_phrases]
@@ -162,6 +208,7 @@ class UOFParser:
 
             # Search for desired terms and check where they are mentioned in the document
             for phrase_to_search_index, regex_phrase_to_search in enumerate(regex_phrases_to_search):
+                # Set the additional condition dictionary
                 if re.findall(regex_phrase_to_search, sentence.lower()):
                     # Report the phrase that has been found
                     phrase_found = phrases_to_search[phrase_to_search_index]
@@ -171,21 +218,25 @@ class UOFParser:
                     language_found += f'{sentence}\n\n'
 
                     # Check all regex phrases for a positive indicator
-                    for regex_positive_indicator_phrase in regex_positive_indicator_phrases:
+                    for i, regex_positive_indicator_phrase in enumerate(regex_positive_indicator_phrases):
                         if re.findall(regex_positive_indicator_phrase, sentence.lower()):
-                            # Find the section for additional context.
-                            section = self.get_lexipol_section(sentence_index) if self.lexipol else ''
-                            print(f'This sentence was found under the section {section}\n')
-                            return True, f'{section}\n\n{sentence}'
+                            # Check any additional conditions
+                            if self.passes_additional_conditions(additional_conditions[i], sentence_index):
+                                # Find the section for additional context.
+                                section = self.get_lexipol_section(sentence_index) if self.lexipol else ''
+                                print(f'This sentence was found under the section {section}\n')
+                                return True, f'{section}\n\n{sentence}'
 
                     # Check if the phrase that was found is part of a list. If so, check previous sentences for context
                     if is_enumerated_list(sentence):
                         for previous_sentence in self.content_as_sentences[sentence_index-2:sentence_index]:
-                            for regex_positive_indicator_phrase in regex_positive_indicator_phrases:
+                            for i, regex_positive_indicator_phrase in enumerate(regex_positive_indicator_phrases):
                                 if re.findall(regex_positive_indicator_phrase, previous_sentence.lower()):
-                                    # Find the section for additional context.
-                                    section = self.get_lexipol_section(sentence_index) if self.lexipol else ''
-                                    print(f'This sentence was found under the section {section}\n')
-                                    return True, f'{section}\n\n{previous_sentence}\n{sentence}'
+                                    # Check any additional conditions
+                                    if self.passes_additional_conditions(additional_conditions[i], sentence_index):
+                                        # Find the section for additional context.
+                                        section = self.get_lexipol_section(sentence_index) if self.lexipol else ''
+                                        print(f'This sentence was found under the section {section}\n')
+                                        return True, f'{section}\n\n{previous_sentence}\n{sentence}'
 
         return False, language_found

@@ -6,8 +6,10 @@ requires_deescalation:
   # be coded as a 0.
   search_terms:
     - escalat
+    - officers should use advisement
   phrases_for_positive_indicator:
     - shall use de-escalation
+    - should use advisement, warnings, and verbal persuasion when...reasonable
 
 bans_chokeholds_and_strangleholds:
   # If the policy either bans both tactics or restricts them to only be authorized as deadly force/in response to an
@@ -56,7 +58,9 @@ requires_comprehensive_reporting:
   # civilian (That’s usually where most departments fail at this).
   search_terms:
     - report
+    - draws a firearm
   phrases_for_positive_indicator:
+    - "when a member draws a firearm and acquires a target ((under section: REPORTING THE USE OF FORCE))"
 
 requires_exhaustion_of_all_other_means:
   # Some policies will just say deadly force is authorized whenever "reasonable to prevent an imminent threat of death
@@ -84,6 +88,8 @@ has_use_of_force_continumm:
     - continuum
     - matrix
     - force classification
+    - force model
   phrases_for_positive_indicator:
     - use of force classification
     - use of force continuum
+    - use of force model
